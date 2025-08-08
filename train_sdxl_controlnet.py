@@ -78,7 +78,7 @@ class CommunityImagePairDataset(Dataset):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--train_data_dir", type=str, default="baseline/sdxl_controlnet_canny/data")
+    parser.add_argument("--train_data_dir", type=str, default="baseline/sdxl_urban_data/data")
     parser.add_argument("--pretrained_model_name_or_path", type=str, default="stabilityai/stable-diffusion-xl-base-1.0")
     parser.add_argument("--controlnet_model_name_or_path", type=str, default="diffusers/controlnet-canny-sdxl-1.0")
     parser.add_argument("--resolution", type=int, default=1024)
@@ -88,7 +88,7 @@ def main():
     parser.add_argument("--max_train_steps", type=int, default=10000)
     parser.add_argument("--gradient_accumulation_steps", type=int, default=8)
     parser.add_argument("--mixed_precision", type=str, default="bf16", choices=["no","fp16","bf16"])  # use "no" to disable
-    parser.add_argument("--output_dir", type=str, default="baseline/sdxl_controlnet_canny/ckpts")
+    parser.add_argument("--output_dir", type=str, default="baseline/sdxl_urban_data/ckpts")
     parser.add_argument("--save_every", type=int, default=2000)
     parser.add_argument("--hf_token", type=str)
     args = parser.parse_args()
