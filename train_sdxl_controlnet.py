@@ -44,7 +44,15 @@ class CommunityImagePairDataset(Dataset):
             for comm_dir in sorted(city_dir.glob("*")):
                 if not comm_dir.is_dir():
                     continue
-                control = comm_dir / ("control_canny.png" if use_canny else "control.png")
+                # Prefer canny control if requested, but gracefully fall back to plain control.
+                if use_canny:
+                    preferred = comm_dir / "control_canny.png"
+                    fallback = comm_dir / "control.png"
+                    control = preferred if preferred.exists() else fallback
+                else:
+                    preferred = comm_dir / "control.png"
+                    fallback = comm_dir / "control_canny.png"
+                    control = preferred if preferred.exists() else fallback
                 target = comm_dir / "target.png"
                 if control.exists() and target.exists():
                     self.samples.append((control, target))
@@ -113,6 +121,11 @@ def main():
         torch_dtype=torch.bfloat16 if mp=="bf16" else None,
     )
 
+    # Determine compute dtype for tensors to match model weights
+    weight_dtype = (
+        torch.bfloat16 if mp == "bf16" else (torch.float16 if mp == "fp16" else torch.float32)
+    )
+
     # Freeze VAE and text encoders
     pipe.vae.requires_grad_(False)
     pipe.text_encoder.requires_grad_(False)
@@ -155,8 +168,9 @@ def main():
     while global_step < args.max_train_steps:
         for batch in dl:
             with accelerator.accumulate(pipe.unet):
-                target = batch["pixel_values"].to(accelerator.device)  # [0,1]
-                control = batch["conditioning"].to(accelerator.device)  # [0,1]
+                # Match input tensor dtype to model weights to avoid dtype mismatch (e.g., bf16 on H100)
+                target = batch["pixel_values"].to(device=accelerator.device, dtype=weight_dtype)  # [0,1]
+                control = batch["conditioning"].to(device=accelerator.device, dtype=weight_dtype)  # [0,1]
 
                 # Encode target image to latents
                 target = (target * 2.0 - 1.0).clamp(-1, 1)  # [-1,1]
@@ -172,7 +186,10 @@ def main():
                 # Text encodings (empty prompt)
                 prompt = [""] * bsz
                 prompt_embeds, pooled_embeds = pipe.encode_prompt(prompt, device=latents.device)
-                time_ids = build_time_ids(bsz, args.resolution, args.resolution).to(latents.device)
+                # Align time_ids dtype with text embeddings as expected by SDXL
+                time_ids = build_time_ids(bsz, args.resolution, args.resolution).to(
+                    device=latents.device, dtype=prompt_embeds.dtype
+                )
                 added_cond_kwargs = {"text_embeds": pooled_embeds, "time_ids": time_ids}
 
                 # ControlNet forward to get residuals
