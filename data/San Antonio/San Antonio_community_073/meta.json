@@ -1,0 +1,7 @@
+{
+  "city": "San Antonio",
+  "community_id": "San Antonio_community_073",
+  "radius_m": 500,
+  "control": "baseline/sdxl_controlnet_canny/data/San Antonio/San Antonio_community_073/control.png",
+  "target": "baseline/sdxl_controlnet_canny/data/San Antonio/San Antonio_community_073/target.png"
+}

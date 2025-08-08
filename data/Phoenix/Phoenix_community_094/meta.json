@@ -1,0 +1,7 @@
+{
+  "city": "Phoenix",
+  "community_id": "Phoenix_community_094",
+  "radius_m": 500,
+  "control": "baseline/sdxl_controlnet_canny/data/Phoenix/Phoenix_community_094/control.png",
+  "target": "baseline/sdxl_controlnet_canny/data/Phoenix/Phoenix_community_094/target.png"
+}

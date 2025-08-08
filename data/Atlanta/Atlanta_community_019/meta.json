@@ -1,0 +1,7 @@
+{
+  "city": "Atlanta",
+  "community_id": "Atlanta_community_019",
+  "radius_m": 500,
+  "control": "baseline/sdxl_controlnet_canny/data/Atlanta/Atlanta_community_019/control.png",
+  "target": "baseline/sdxl_controlnet_canny/data/Atlanta/Atlanta_community_019/target.png"
+}

@@ -1,0 +1,7 @@
+{
+  "city": "Chicago",
+  "community_id": "Chicago_community_061",
+  "radius_m": 500,
+  "control": "baseline/sdxl_controlnet_canny/data/Chicago/Chicago_community_061/control.png",
+  "target": "baseline/sdxl_controlnet_canny/data/Chicago/Chicago_community_061/target.png"
+}

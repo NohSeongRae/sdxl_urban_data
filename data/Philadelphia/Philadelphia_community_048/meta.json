@@ -1,0 +1,7 @@
+{
+  "city": "Philadelphia",
+  "community_id": "Philadelphia_community_048",
+  "radius_m": 500,
+  "control": "baseline/sdxl_controlnet_canny/data/Philadelphia/Philadelphia_community_048/control.png",
+  "target": "baseline/sdxl_controlnet_canny/data/Philadelphia/Philadelphia_community_048/target.png"
+}

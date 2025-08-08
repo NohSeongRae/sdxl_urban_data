@@ -1,0 +1,7 @@
+{
+  "city": "San Diego",
+  "community_id": "San Diego_community_072",
+  "radius_m": 500,
+  "control": "baseline/sdxl_controlnet_canny/data/San Diego/San Diego_community_072/control.png",
+  "target": "baseline/sdxl_controlnet_canny/data/San Diego/San Diego_community_072/target.png"
+}

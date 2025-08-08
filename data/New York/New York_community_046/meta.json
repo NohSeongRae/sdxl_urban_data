@@ -1,0 +1,7 @@
+{
+  "city": "New York",
+  "community_id": "New York_community_046",
+  "radius_m": 500,
+  "control": "baseline/sdxl_controlnet_canny/data/New York/New York_community_046/control.png",
+  "target": "baseline/sdxl_controlnet_canny/data/New York/New York_community_046/target.png"
+}

@@ -1,0 +1,7 @@
+{
+  "city": "Los Angeles",
+  "community_id": "Los Angeles_community_018",
+  "radius_m": 500,
+  "control": "baseline/sdxl_controlnet_canny/data/Los Angeles/Los Angeles_community_018/control.png",
+  "target": "baseline/sdxl_controlnet_canny/data/Los Angeles/Los Angeles_community_018/target.png"
+}

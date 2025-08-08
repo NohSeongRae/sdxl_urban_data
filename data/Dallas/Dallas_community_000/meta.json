@@ -1,0 +1,7 @@
+{
+  "city": "Dallas",
+  "community_id": "Dallas_community_000",
+  "radius_m": 500,
+  "control": "baseline/sdxl_controlnet_canny/data/Dallas/Dallas_community_000/control.png",
+  "target": "baseline/sdxl_controlnet_canny/data/Dallas/Dallas_community_000/target.png"
+}
