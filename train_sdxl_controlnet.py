@@ -90,7 +90,7 @@ def main():
     parser.add_argument("--mixed_precision", type=str, default="bf16", choices=["no","fp16","bf16"])  # use "no" to disable
     parser.add_argument("--output_dir", type=str, default="baseline/sdxl_controlnet_canny/ckpts")
     parser.add_argument("--save_every", type=int, default=2000)
-    parser.add_argument("--hf_token", type=str, default="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")
+    parser.add_argument("--hf_token", type=str)
     args = parser.parse_args()
 
     # Accelerator (handles gradient accumulation + mixed precision)
@@ -183,9 +183,29 @@ def main():
                 timesteps = torch.randint(0, noise_scheduler.config.num_train_timesteps, (bsz,), device=latents.device, dtype=torch.long)
                 noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
 
-                # Text encodings (empty prompt)
+                # Text encodings (empty prompt). Handle both 2- and 4-tuple return formats and possible dataclass.
                 prompt = [""] * bsz
-                prompt_embeds, pooled_embeds = pipe.encode_prompt(prompt, device=latents.device)
+                enc = pipe.encode_prompt(
+                    prompt=prompt,
+                    device=latents.device,
+                    num_images_per_prompt=1,
+                    do_classifier_free_guidance=False,
+                )
+
+                if isinstance(enc, tuple):
+                    if len(enc) == 2:
+                        prompt_embeds, pooled_embeds = enc
+                    elif len(enc) == 4:
+                        prompt_embeds, _neg_embeds, pooled_embeds, _neg_pooled = enc
+                    else:
+                        raise RuntimeError(f"Unexpected encode_prompt tuple length: {len(enc)}")
+                else:
+                    # Newer diffusers may return a dataclass-like object
+                    prompt_embeds = getattr(enc, "prompt_embeds", None)
+                    pooled_embeds = getattr(enc, "pooled_prompt_embeds", None)
+                    if prompt_embeds is None or pooled_embeds is None:
+                        # Fallback to legacy API: two outputs
+                        prompt_embeds, pooled_embeds = pipe.encode_prompt(prompt, device=latents.device)
                 # Align time_ids dtype with text embeddings as expected by SDXL
                 time_ids = build_time_ids(bsz, args.resolution, args.resolution).to(
                     device=latents.device, dtype=prompt_embeds.dtype
